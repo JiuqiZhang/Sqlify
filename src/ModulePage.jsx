@@ -19,7 +19,7 @@ export default function ModulePage() {
   const [error, setError] = useState("");
 
   const api = axios.create({
-    baseURL: "http://localhost:8000",
+    baseURL: "https://db-group10-451422.wl.r.appspot.com",
   });
 
   useEffect(() => {
@@ -105,11 +105,11 @@ export default function ModulePage() {
   }, [moduleId, courseId, user.role]);
 
   const handleQuizClick = (quizId) => {
-    navigate(`/quiz/${quizId}`);
+    navigate(`/course/${courseId}/module/${moduleId}/quiz/${quizId}`);
   };
 
   const handleCreateQuiz = () => {
-    navigate(`/create-quiz/${moduleId}`);
+    navigate(`/course/${courseId}/module/${moduleId}/create-quiz`);
   };
 
   if (loading) {
@@ -193,9 +193,10 @@ export default function ModulePage() {
             </a>
           </div>
           <a 
-            href={moduleDetails.contentLink} 
-            target="_blank" 
-            rel="noopener noreferrer"
+          
+            onClick={()=>{window.open("https://"+moduleDetails.contentLink)}}
+         
+       
             style={{
               backgroundColor: "#4CAF50",
               color: "white",

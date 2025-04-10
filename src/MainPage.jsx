@@ -197,7 +197,7 @@ export default function MainPage() {
             marginTop: "1rem",
             cursor: "pointer"
           }}
-          onClick={() => navigate("/enroll-course")}
+          onClick={() => navigate("/enroll")}
         >
           📚 Enroll in Course
         </button>
@@ -262,25 +262,11 @@ export default function MainPage() {
         borderRadius: "4px",
         backgroundColor: "#f8f9fa"
       }}>
-        <h5>:</h5>
-        <p>ID: {user.userId}</p>
-        <p>role: {user.role}</p>
-        <p>registered: {enrolledCourses.length}</p>
-        <p>availablecourse: {availableCourses.length}</p>
         
-        <details>
-          <summary>raq API</summary>
-          <pre style={{ whiteSpace: "pre-wrap", fontSize: "0.8rem" }}>
-            {JSON.stringify(rawApiResponses, null, 2)}
-          </pre>
-        </details>
         
-        <details>
-          <summary>info</summary>
-          <pre style={{ whiteSpace: "pre-wrap", fontSize: "0.8rem" }}>
-            {debugInfo}
-          </pre>
-        </details>
+        
+        
+        
       </div>
     </div>
   );

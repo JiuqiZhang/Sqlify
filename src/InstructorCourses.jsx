@@ -10,14 +10,14 @@ export default function InstructorCourses() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   
-  // 新课程表单状态
+  // new course form state
   const [showForm, setShowForm] = useState(false);
   const [newCourseName, setNewCourseName] = useState("");
   const [newCourseDescription, setNewCourseDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   
-  // 从localStorage获取用户数据
+  // acquire user information
   const storedUser = JSON.parse(localStorage.getItem("user")) || {};
   const userId = instructorId || storedUser.userId || storedUser.user_id;
   const user = {
@@ -26,41 +26,41 @@ export default function InstructorCourses() {
     role: (storedUser.identity || storedUser.role || "guest").toLowerCase(),
   };
 
-  // API实例
+  // API instance
   const api = axios.create({
-    baseURL: "http://localhost:8000",
+    baseURL: "https://db-group10-451422.wl.r.appspot.com",
   });
 
-  // 验证用户角色
+  
   useEffect(() => {
     if (user.role !== "instructor") {
       navigate("/main");
     }
   }, [user.role, navigate]);
 
-  // 获取教师的所有课程
+  
   useEffect(() => {
     const fetchCourses = async () => {
       if (!userId) {
-        setError("缺少教师ID");
+        setError("lack of user ID");
         setLoading(false);
         return;
       }
 
       try {
         setLoading(true);
-        console.log(`获取教师 ${userId} 的课程`);
+        console.log(`acquire ${userId} course`);
         const response = await api.get(`/instructor/${userId}/courses`);
         
         if (response.data && response.data.success) {
-          console.log("获取到课程:", response.data.courses);
+          console.log("acquried course:", response.data.courses);
           setCourses(response.data.courses || []);
         } else {
-          setError("获取课程失败");
+          setError("failed to acqurie course");
         }
       } catch (err) {
-        console.error("获取课程时出错:", err);
-        setError(`获取课程失败: ${err.message}`);
+        console.error("error :", err);
+        setError(`failed: ${err.message}`);
       } finally {
         setLoading(false);
       }
@@ -69,22 +69,22 @@ export default function InstructorCourses() {
     fetchCourses();
   }, [userId]);
 
-  // 切换表单显示
+  
   const toggleForm = () => {
     setShowForm(!showForm);
-    // 重置表单和状态
+    
     setNewCourseName("");
     setNewCourseDescription("");
     setSuccess(false);
     setError("");
   };
 
-  // 创建新课程
+  
   const handleCreateCourse = async (e) => {
     e.preventDefault();
     
     if (!newCourseName.trim()) {
-      setError("课程名称是必填项");
+      setError("course name is neccessary");
       return;
     }
 
@@ -98,86 +98,86 @@ export default function InstructorCourses() {
         instructorId: userId
       };
       
-      console.log("创建新课程:", courseData);
+      console.log("create new course:", courseData);
       const response = await api.post("/instructor/courses", courseData);
       
       if (response.data && response.data.success) {
-        console.log("课程创建成功:", response.data);
+        console.log("successfully created course:", response.data);
         setSuccess(true);
         
-        // 刷新课程列表
+        // refresh course list
         const coursesResponse = await api.get(`/instructor/${userId}/courses`);
         if (coursesResponse.data && coursesResponse.data.success) {
           setCourses(coursesResponse.data.courses || []);
         }
         
-        // 重置表单
+        // reset form fields
         setNewCourseName("");
         setNewCourseDescription("");
         
-        // 短暂延迟后隐藏表单
+        // hide form after 2 seconds
         setTimeout(() => {
           setShowForm(false);
           setSuccess(false);
         }, 2000);
       } else {
-        setError("创建课程失败");
+        setError("failed to create course");
       }
     } catch (err) {
-      console.error("创建课程时出错:", err);
-      setError(`创建课程失败: ${err.message}`);
+      console.error("error:", err);
+      setError(`failed: ${err.message}`);
     } finally {
       setSubmitting(false);
     }
   };
 
-  // 查看课程详情
+  // instructor view course
   const handleViewCourse = (courseId) => {
     navigate(`/course/${courseId}`);
   };
 
-  // 编辑课程
+  // edit course
   const handleEditCourse = (e, courseId) => {
-    e.stopPropagation(); // 阻止冒泡，避免触发卡片点击
+    e.stopPropagation(); //
     navigate(`/instructor/edit-course/${courseId}`);
   };
 
-  // 删除课程
+  // delete course
   const handleDeleteCourse = async (e, courseId) => {
-    e.stopPropagation(); // 阻止冒泡，避免触发卡片点击
+    e.stopPropagation(); 
     
-    if (window.confirm("确定要删除这个课程吗？所有相关的模块和测验也将被删除。")) {
+    if (window.confirm("are yous ure to delete this course?")) {
       try {
         const response = await api.delete(`/instructor/courses/${courseId}`, {
           data: { instructorId: userId }
         });
         
         if (response.data && response.data.success) {
-          // 从列表中移除已删除的课程
+          //
           setCourses(courses.filter(c => c.courseId !== courseId));
         } else {
-          setError("删除课程失败");
+          setError("failed to delete course");
         }
       } catch (err) {
-        console.error("删除课程时出错:", err);
-        setError(`删除课程失败: ${err.message}`);
+        console.error("errot:", err);
+        setError(`failed to delete: ${err.message}`);
       }
     }
   };
 
-  // 查看学生进度
+ 
   const handleViewProgress = (e, courseId) => {
-    e.stopPropagation(); // 阻止冒泡，避免触发卡片点击
+    e.stopPropagation(); 
     navigate(`/instructor/progress?courseId=${courseId}`);
   };
 
-  // 查看注册学生
+  
   const handleViewStudents = (e, courseId) => {
-    e.stopPropagation(); // 阻止冒泡，避免触发卡片点击
+    e.stopPropagation(); 
     navigate(`/instructor/students?courseId=${courseId}`);
   };
 
-  // 返回上一级
+  
   const handleBack = () => {
     navigate("/instructor");
   };
@@ -190,14 +190,14 @@ export default function InstructorCourses() {
         backgroundColor: "#f9f9f9",
         borderRadius: "8px" 
       }}>
-        <p>加载课程中...</p>
+        <p>loading..</p>
       </div>
     );
   }
 
   return (
     <div style={{ padding: "2rem", maxWidth: "1200px", margin: "0 auto" }}>
-      {/* 返回按钮 */}
+      
       <button
         onClick={handleBack}
         style={{
@@ -212,7 +212,7 @@ export default function InstructorCourses() {
           marginBottom: "20px"
         }}
       >
-        ← 返回主页
+        ← back to instructor page
       </button>
 
       <h1 style={{ 
@@ -221,7 +221,7 @@ export default function InstructorCourses() {
         borderBottom: "1px solid #eaeaea",
         paddingBottom: "1rem"
       }}>
-        我的课程
+        my course
       </h1>
 
       {error && !submitting && (
@@ -232,7 +232,7 @@ export default function InstructorCourses() {
           borderRadius: "6px",
           marginBottom: "1.5rem"
         }}>
-          <strong>错误:</strong> {error}
+          <strong>error:</strong> {error}
         </div>
       )}
 
@@ -244,7 +244,7 @@ export default function InstructorCourses() {
           borderRadius: "6px",
           marginBottom: "1.5rem"
         }}>
-          <strong>成功!</strong> 课程已创建
+          <strong>success!</strong> course created successfully!
         </div>
       )}
 
@@ -254,7 +254,7 @@ export default function InstructorCourses() {
         alignItems: "center", 
         marginBottom: "1.5rem" 
       }}>
-        <h2 style={{ margin: 0 }}>课程列表</h2>
+        <h2 style={{ margin: 0 }}>course list</h2>
         <button
           onClick={toggleForm}
           style={{
@@ -269,11 +269,11 @@ export default function InstructorCourses() {
             fontSize: "1rem"
           }}
         >
-          {showForm ? "取消" : "+ 创建新课程"}
+          {showForm ? "cancel" : "+ create new course"}
         </button>
       </div>
 
-      {/* 创建课程表单 */}
+      
       {showForm && (
         <div style={{ 
           backgroundColor: "#f8f9fa", 
@@ -282,7 +282,7 @@ export default function InstructorCourses() {
           marginBottom: "1.5rem",
           border: "1px solid #dee2e6"
         }}>
-          <h3 style={{ marginTop: 0, marginBottom: "1rem" }}>创建新课程</h3>
+          <h3 style={{ marginTop: 0, marginBottom: "1rem" }}>create new course</h3>
           
           <form onSubmit={handleCreateCourse}>
             <div style={{ marginBottom: "1rem" }}>
@@ -294,7 +294,7 @@ export default function InstructorCourses() {
                   fontWeight: "bold"
                 }}
               >
-                课程名称:
+                course name:
               </label>
               <input
                 id="course-name"
@@ -307,7 +307,7 @@ export default function InstructorCourses() {
                   borderRadius: "4px",
                   border: "1px solid #ced4da"
                 }}
-                placeholder="输入课程名称"
+                placeholder="input course name"
                 required
               />
             </div>
@@ -321,7 +321,7 @@ export default function InstructorCourses() {
                   fontWeight: "bold"
                 }}
               >
-                课程描述:
+                course description:
               </label>
               <textarea
                 id="course-description"
@@ -334,7 +334,7 @@ export default function InstructorCourses() {
                   border: "1px solid #ced4da",
                   minHeight: "100px"
                 }}
-                placeholder="输入课程描述（可选）"
+                placeholder="input course description）"
               />
             </div>
             
@@ -352,13 +352,13 @@ export default function InstructorCourses() {
                 opacity: submitting ? 0.6 : 1
               }}
             >
-              {submitting ? "创建中..." : "创建课程"}
+              {submitting ? "creating..." : "create course"}
             </button>
           </form>
         </div>
       )}
 
-      {/* 课程列表 */}
+      
       {courses.length === 0 ? (
         <div style={{ 
           padding: "20px", 
@@ -367,7 +367,7 @@ export default function InstructorCourses() {
           marginBottom: "1.5rem",
           textAlign: "center"
         }}>
-          <p>您还没有创建任何课程。</p>
+          <p>You have not create any course yet.</p>
           {!showForm && (
             <button
               onClick={toggleForm}
@@ -381,7 +381,7 @@ export default function InstructorCourses() {
                 marginTop: "10px"
               }}
             >
-              创建您的第一个课程
+              create your first course
             </button>
           )}
         </div>
@@ -434,7 +434,7 @@ export default function InstructorCourses() {
                 {course.courseDescription || "无描述"}
               </p>
               
-              {/* 课程操作按钮组 */}
+              {/* course operations*/}
               <div style={{ 
                 marginTop: "auto", 
                 display: "flex", 
@@ -453,7 +453,7 @@ export default function InstructorCourses() {
                     fontSize: "0.8rem"
                   }}
                 >
-                  查看课程
+                  view course
                 </button>
                 
                 <button
@@ -468,7 +468,7 @@ export default function InstructorCourses() {
                     fontSize: "0.8rem"
                   }}
                 >
-                  编辑
+                  edit
                 </button>
                 
                 <button
@@ -483,7 +483,7 @@ export default function InstructorCourses() {
                     fontSize: "0.8rem"
                   }}
                 >
-                  删除
+                  delete
                 </button>
                 
                 <button
@@ -498,7 +498,7 @@ export default function InstructorCourses() {
                     fontSize: "0.8rem"
                   }}
                 >
-                  查看学生
+                  view student
                 </button>
                 
                 <button
@@ -513,7 +513,7 @@ export default function InstructorCourses() {
                     fontSize: "0.8rem"
                   }}
                 >
-                  查看进度
+                  insepct progress
                 </button>
               </div>
             </div>

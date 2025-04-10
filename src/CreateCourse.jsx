@@ -28,8 +28,8 @@ export default function CreateCourse() {
       
       const res = await api.post("/instructor/courses", {
         name: name,
-        course_description: description,
-        instructor_id: instructorId
+        description: description,
+        instructorId: instructorId
       });
       
       console.log("server response:", res.data);
@@ -97,7 +97,7 @@ export default function CreateCourse() {
               cursor: "pointer"
             }}
           >
-            取消
+            Cancel
           </button>
         </div>
       </form>

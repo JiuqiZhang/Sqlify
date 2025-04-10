@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import { ConstructionOutlined } from "@mui/icons-material";
 
 // 测验作答组件 (学生视图)
 const TakeQuizForm = ({ quiz, onSubmit, loading }) => {
@@ -60,7 +61,7 @@ const TakeQuizForm = ({ quiz, onSubmit, loading }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // 格式化答案以便提交
+    //  
     const formattedAnswers = Object.keys(answers).map(questionId => ({
       questionId: parseInt(questionId),
       answer: answers[questionId]
@@ -72,7 +73,7 @@ const TakeQuizForm = ({ quiz, onSubmit, loading }) => {
   if (loadingQuestions) {
     return (
       <div style={{ padding: "15px", textAlign: "center" }}>
-        <p>正在加载测验问题...</p>
+        <p>loading question..</p>
       </div>
     );
   }
@@ -86,7 +87,7 @@ const TakeQuizForm = ({ quiz, onSubmit, loading }) => {
         borderRadius: "6px",
         marginBottom: "1.5rem"
       }}>
-        <strong>错误:</strong> {error}
+        <strong>error:</strong> {error}
       </div>
     );
   }
@@ -100,7 +101,7 @@ const TakeQuizForm = ({ quiz, onSubmit, loading }) => {
         marginBottom: "1.5rem",
         textAlign: "center"
       }}>
-        <p>此测验没有问题。</p>
+        <p>No question in the quiz</p>
       </div>
     );
   }
@@ -135,7 +136,7 @@ const TakeQuizForm = ({ quiz, onSubmit, loading }) => {
                 fontWeight: "bold"
               }}
             >
-              你的答案:
+              your answer:
             </label>
             <input
               id={`answer-${question.id}`}
@@ -148,7 +149,7 @@ const TakeQuizForm = ({ quiz, onSubmit, loading }) => {
                 borderRadius: "4px",
                 border: "1px solid #ced4da"
               }}
-              placeholder="输入你的答案"
+              placeholder="input your answer"
               required
             />
           </div>
@@ -170,13 +171,13 @@ const TakeQuizForm = ({ quiz, onSubmit, loading }) => {
           opacity: loading ? 0.6 : 1
         }}
       >
-        {loading ? "提交中..." : "提交答案"}
-      </button>
+        {loading ? "submiting..." : "submit answer"}
+      </button> 
     </form>
   );
 };
 
-// 测验列表组件
+// test list component
 const QuizList = ({ quizzes, onSelect, onCreateQuiz, isInstructor, moduleId }) => {
   if (quizzes.length === 0) {
     return (
@@ -201,7 +202,7 @@ const QuizList = ({ quizzes, onSelect, onCreateQuiz, isInstructor, moduleId }) =
               cursor: "pointer"
             }}
           >
-            创建你的第一个测验
+            create a new quiz
           </button>
         )}
       </div>
@@ -257,13 +258,11 @@ const QuizList = ({ quizzes, onSelect, onCreateQuiz, isInstructor, moduleId }) =
               color: "#6c757d",
               fontSize: "0.9rem"
             }}>
-              <span style={{ marginRight: "5px" }}>难度:</span>
-              {[...Array(quiz.difficultyLevel || 1)].map((_, i) => (
-                <span key={i} style={{ color: "#ffc107" }}>★</span>
-              ))}
-              {[...Array(5 - (quiz.difficultyLevel || 1))].map((_, i) => (
-                <span key={i} style={{ color: "#e9ecef" }}>★</span>
-              ))}
+              <span style={{ marginRight: "5px" }}>difficulty:</span>
+              
+                <span style={{ color: "#ffc107" }}>{"★".repeat(quiz.difficultyLevel)}</span>
+                <span style={{ color: "#e9ecef" }}>{"★".repeat(5-quiz.difficultyLevel)}</span>
+            
             </div>
             
             <div style={{ marginTop: "auto", paddingTop: "10px" }}>
@@ -275,7 +274,7 @@ const QuizList = ({ quizzes, onSelect, onCreateQuiz, isInstructor, moduleId }) =
                 padding: "4px 8px",
                 borderRadius: "4px"
               }}>
-                {isInstructor ? "编辑测验" : "开始测验"}
+                {isInstructor ? "Edit" : "Start the quiz"}
               </span>
             </div>
           </div>
@@ -285,13 +284,13 @@ const QuizList = ({ quizzes, onSelect, onCreateQuiz, isInstructor, moduleId }) =
   );
 };
 
-// 主测验页面组件
+// main quiz page component
 export default function QuizPage() {
   const { moduleId, courseId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   
-  // 从localStorage获取用户数据
+  // user information from localStorage
   const storedUser = JSON.parse(localStorage.getItem("user")) || {};
   const user = {
     userId: storedUser.userId || storedUser.user_id,
@@ -301,7 +300,7 @@ export default function QuizPage() {
 
   const isInstructor = user.role === "instructor";
 
-  // 状态管理
+  // state management
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -309,12 +308,12 @@ export default function QuizPage() {
   const [submitting, setSubmitting] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
 
-  // API实例
+  // APIinstance
   const api = axios.create({
-    baseURL: "http://localhost:8000",
+    baseURL: "https://db-group10-451422.wl.r.appspot.com",
   });
 
-  // 从location.state中获取已选测验
+  
   useEffect(() => {
     if (location.state && location.state.selectedQuiz) {
       setSelectedQuiz(location.state.selectedQuiz);
@@ -322,11 +321,11 @@ export default function QuizPage() {
     }
   }, [location.state]);
 
-  // 获取模块的测验
   useEffect(() => {
     const fetchQuizzes = async () => {
       if (!moduleId) {
-        setError("缺少模块ID");
+        console.log('aaa')
+        setError("lack of moduleID");
         setLoading(false);
         return;
       }
@@ -334,27 +333,27 @@ export default function QuizPage() {
       try {
         setLoading(true);
         
-        // 根据用户角色选择合适的端点
+       
         const endpoint = isInstructor ? "/instructor/quizzes" : "/student/quizzes";
-        console.log(`从${endpoint}获取测验，moduleId=${moduleId}`);
+        console.log(` acquire quizz from${endpoint}，moduleId=${moduleId}`);
         
         const response = await api.post(endpoint, { moduleId });
         
         if (response.data && response.data.success) {
-          console.log("获取到的测验:", response.data.quizzes);
+          console.log("fetched quizz:", response.data.quizzes);
           setQuizzes(response.data.quizzes || []);
         } else {
-          setError("获取测验失败");
+          setError("failed to fetch quizzes");
         }
       } catch (err) {
-        console.error("获取测验时出错:", err);
-        setError(`获取测验失败: ${err.message}`);
+        console.error("error:", err);
+        setError(`failed to fetch quizz: ${err.message}`);
       } finally {
         setLoading(false);
       }
     };
 
-    // 只有在没有预选测验的情况下才获取测验列表
+    
     if (!selectedQuiz) {
       fetchQuizzes();
     } else {
@@ -362,29 +361,29 @@ export default function QuizPage() {
     }
   }, [moduleId, isInstructor, selectedQuiz]);
 
-  // 处理测验选择
+  
   const handleSelectQuiz = (quiz) => {
     setSelectedQuiz(quiz);
     setQuizCompleted(false);
   };
 
-  // 处理测验创建
+
   const handleCreateQuiz = () => {
     navigate(`/course/${courseId}/module/${moduleId}/create-quiz`);
   };
 
-  // 处理测验提交
+ 
   const handleSubmitQuiz = async (answers) => {
     if (!user.userId) {
-      setError("您必须登录才能提交测验");
+      setError("you must log in to submit the quiz");
       return;
     }
 
     try {
       setSubmitting(true);
-      console.log("提交测验答案:", {studentId: user.userId, answers});
+      console.log("answer of student:", {studentId: user.userId, answers});
       
-      // 提交测验答案
+      
       const response = await api.post("/student/attempt", {
         studentId: user.userId,
         answers
@@ -393,11 +392,11 @@ export default function QuizPage() {
       if (response.data && response.data.success) {
         setQuizCompleted(true);
       } else {
-        setError("提交测验失败");
+        setError("failed to submit quiz");
       }
     } catch (err) {
-      console.error("提交测验时出错:", err);
-      setError(`提交测验失败: ${err.message}`);
+      console.error("error:", err);
+      setError(`failed to submit quiz: ${err.message}`);
     } finally {
       setSubmitting(false);
     }
@@ -411,14 +410,14 @@ export default function QuizPage() {
         backgroundColor: "#f9f9f9",
         borderRadius: "8px" 
       }}>
-        <p>加载测验中...</p>
+        <p>loading test...</p>
       </div>
     );
   }
 
   return (
     <div style={{ padding: "2rem", maxWidth: "1200px", margin: "0 auto" }}>
-      {/* 返回按钮 */}
+      
       <button
         onClick={() => navigate(`/course/${courseId}/module/${moduleId}`)}
         style={{
@@ -433,7 +432,7 @@ export default function QuizPage() {
           marginBottom: "20px"
         }}
       >
-        ← 返回模块
+        ←back to module
       </button>
 
       <h1 style={{ 
@@ -453,7 +452,7 @@ export default function QuizPage() {
           borderRadius: "6px",
           marginBottom: "1.5rem"
         }}>
-          <strong>错误:</strong> {error}
+          <strong>error:</strong> {error}
         </div>
       )}
 
@@ -465,7 +464,7 @@ export default function QuizPage() {
           borderRadius: "6px",
           marginBottom: "1.5rem"
         }}>
-          <strong>成功!</strong> 您的测验已提交。
+          <strong>success!</strong> your quiz has been submitted.
           <button
             onClick={() => setSelectedQuiz(null)}
             style={{
@@ -479,12 +478,12 @@ export default function QuizPage() {
               cursor: "pointer"
             }}
           >
-            返回测验列表
+            back to quiz list
           </button>
         </div>
       )}
 
-      {/* 顶部操作栏 */}
+      
       {!selectedQuiz && isInstructor && (
         <div style={{ 
           display: "flex", 
@@ -492,7 +491,7 @@ export default function QuizPage() {
           alignItems: "center", 
           marginBottom: "1.5rem" 
         }}>
-          <h2 style={{ margin: 0 }}>模块测验</h2>
+          <h2 style={{ margin: 0 }}>module quiz</h2>
           <button
             onClick={handleCreateQuiz}
             style={{
@@ -507,12 +506,12 @@ export default function QuizPage() {
               fontSize: "1rem"
             }}
           >
-            + 创建新测验
+            +create new quizz
           </button>
         </div>
       )}
 
-      {/* 测验内容 */}
+      {/* quizz content */}
       {selectedQuiz && !quizCompleted ? (
         <>
           <div style={{ 
@@ -521,16 +520,16 @@ export default function QuizPage() {
             borderRadius: "8px",
             marginBottom: "1.5rem"
           }}>
-            <h3 style={{ margin: "0 0 8px 0" }}>测验信息</h3>
+            <h3 style={{ margin: "0 0 8px 0" }}>quizz information</h3>
             <p style={{ margin: "0 0 5px 0" }}>
-              <strong>难度:</strong> {selectedQuiz.difficultyLevel === 1 ? "简单" : 
+              <strong>Difficulty:</strong> {selectedQuiz.difficultyLevel === 1 ? "简单" : 
                                     selectedQuiz.difficultyLevel === 2 ? "中等" : "困难"}
             </p>
           </div>
           
           {isInstructor ? (
             <div style={{ textAlign: "center", padding: "20px", backgroundColor: "#f8f9fa", borderRadius: "8px" }}>
-              <p>作为教师，您可以查看但不能参加测验。</p>
+              <p>As professor, you can not attend a quiz.</p>
               <button
                 onClick={() => setSelectedQuiz(null)}
                 style={{
@@ -543,7 +542,7 @@ export default function QuizPage() {
                   cursor: "pointer"
                 }}
               >
-                返回测验列表
+                Return to list
               </button>
             </div>
           ) : (

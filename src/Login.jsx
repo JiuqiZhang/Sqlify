@@ -106,7 +106,7 @@ export default function Login(props) {
       
       setLoginStatus('Connecting to server...');
       
-      const response = await axios.post('http://localhost:8000/login', {
+      const response = await axios.post('https://db-group10-451422.wl.r.appspot.com/login', {
         name: email,
         email,
         password
@@ -272,7 +272,7 @@ export default function Login(props) {
             </Typography>
           </Box>
           
-          {/* Debug info - 可以在生产环境中移除 */}
+         
           <Box sx={{ 
             marginTop: 2, 
             padding: 2, 

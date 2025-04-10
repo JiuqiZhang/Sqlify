@@ -157,12 +157,12 @@ export default function CoursePage() {
 
       // Normalize module data to handle different API response formats
       const normalizedModules = modulesList
-        .filter(m => (m.moduleId ?? m.id) && (m.title?.trim() || m.content_link))
+       
         .map(m => ({
-          id: m.moduleId ?? m.id,
+          id:  m.id,
           title: m.title,
           contentLink: m.content_link || m.contentLink || "",
-          courseId: m.course_id || m.courseId || courseId,
+          courseId: m.course_id ,
         }));
 
       console.log("Normalized modules:", normalizedModules);
@@ -273,7 +273,7 @@ export default function CoursePage() {
             {modules.map((module) => (
               <div
                 key={`${courseId}-${module.id}-${module.title}`}
-                onClick={() => handleModuleClick(module.id)}
+                onClick={() => {handleModuleClick(module.id);}}
                 style={{
                   padding: "16px", backgroundColor: "#f8f9fa", borderRadius: "8px",
                   boxShadow: "0 2px 4px rgba(0,0,0,0.05)", cursor: "pointer",

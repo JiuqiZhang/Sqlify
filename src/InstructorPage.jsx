@@ -145,7 +145,7 @@ export default function InstructorPage() {
         </button>
       </div>
       
-      {/* 调试信息 */}
+      
       <div style={{ 
         marginTop: "2rem", 
         padding: "1rem", 
