@@ -122,7 +122,7 @@ export default function SignUp(props) {
     const role = "Student"; // 默认是学生
 
     try {
-      const res = await axios.post("https://db-group10-451422.wl.r.appspot.com/signup", {
+      const res = await axios.post("http://localhost:8000", {
         name,
         email,
         password,

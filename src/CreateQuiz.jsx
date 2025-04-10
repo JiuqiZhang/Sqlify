@@ -48,7 +48,7 @@ export default function CreateQuiz(props) {
         title,
         difficultyLevel,
         questions,})
-      const res = await axios.post('https://db-group10-451422.wl.r.appspot.com/instructor/newquizzes', {
+      const res = await axios.post('http://localhost:8000/instructor/newquizzes', {
         instructorId,
         moduleId,
         title,

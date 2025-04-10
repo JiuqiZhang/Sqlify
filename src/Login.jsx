@@ -106,7 +106,7 @@ export default function Login(props) {
       
       setLoginStatus('Connecting to server...');
       
-      const response = await axios.post('https://db-group10-451422.wl.r.appspot.com/login', {
+      const response = await axios.post('http://localhost:8000/login', {
         name: email,
         email,
         password
@@ -266,7 +266,7 @@ export default function Login(props) {
             </Button>
             <Typography sx={{ textAlign: 'center' }}>
               Don't have an account?{' '}
-              <Link href="/signup" variant="body2">
+              <Link href="/" variant="body2">
                 Sign up
               </Link>
             </Typography>
@@ -280,10 +280,7 @@ export default function Login(props) {
             borderRadius: 1,
             fontSize: '0.75rem'
           }}>
-            <Typography variant="caption">Debug Info:</Typography>
-            <Box component="pre" sx={{ margin: 0, fontSize: 'inherit' }}>
-              {`localStorage status: ${typeof localStorage !== 'undefined' ? 'available' : 'unavailable'}`}
-            </Box>
+            
           </Box>
         </Card>
       </LoginContainer>

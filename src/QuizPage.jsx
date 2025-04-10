@@ -310,7 +310,7 @@ export default function QuizPage() {
 
   // APIinstance
   const api = axios.create({
-    baseURL: "https://db-group10-451422.wl.r.appspot.com",
+    baseURL: "http://localhost:8000",
   });
 
   
