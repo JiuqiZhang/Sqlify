@@ -1,4 +1,3 @@
-// this is the ;login page, not matter student or instructor, they can login
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -15,6 +14,7 @@ import { styled } from '@mui/material/styles';
 import AppTheme from './shared-theme/AppTheme';
 import ColorModeSelect from './shared-theme/ColorModeSelect';
 import { GoogleIcon, FacebookIcon } from './components/CustomIcons';
+import axios from 'axios';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -55,6 +55,8 @@ export default function Login(props) {
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const [loginStatus, setLoginStatus] = React.useState('');
 
   const validateInputs = () => {
     const email = document.getElementById('email');
@@ -64,16 +66,16 @@ export default function Login(props) {
 
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
+      setEmailErrorMessage('Please enter a valid email');
       isValid = false;
     } else {
       setEmailError(false);
       setEmailErrorMessage('');
     }
 
-    if (!password.value || password.value.length < 6) {
+    if (!password.value || password.value.length < 4) {
       setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters.');
+      setPasswordErrorMessage('Password must be at least 4 characters');
       isValid = false;
     } else {
       setPasswordError(false);
@@ -83,46 +85,94 @@ export default function Login(props) {
     return isValid;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateInputs()) return;
 
+    setLoading(true);
+    setLoginStatus('Validating credentials...');
+
     const data = new FormData(event.currentTarget);
-    const email = data.get('email');
-    const password = data.get('password');
+    const email = data.get('email').trim();
+    const password = data.get('password').trim();
 
-    // 🧪 本地模拟的用户数据库
-    const mockUsers = [
-      {
-        email: 'student@example.com',
-        password: '123456',
-        username: 'StudentTest',
-        identity: 'student',
-      },
-      {
-        email: 'teacher@example.com',
-        password: '123456',
-        username: 'InstructorTest',
-        identity: 'instructor',
-      },
-    ];
+    try {
+      console.log('Sending login request with:', { email, password });
+      
+      //test localStorage
+      localStorage.setItem('test', 'working');
+      console.log('localStorage test:', localStorage.getItem('test'));
+      localStorage.removeItem('test');
+      
+      setLoginStatus('Connecting to server...');
+      
+      const response = await axios.post('http://localhost:8000/login', {
+        name: email,
+        email,
+        password
+      });
 
-    // 匹配用户
-    const user = mockUsers.find(
-      (u) => u.email === email && u.password === password
-    );
+      console.log('Login API response received:', response);
+      console.log('Response data:', response.data);
+      
+      setLoginStatus('Processing response...');
 
-    if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
-      alert(`Welcome back, ${user.username}!`);
+      if (response.data && response.data.success) {
+        const user = {
+          user_id: response.data.userId,
+          username: response.data.userName,
+          identity: response.data.role
+        };
 
-      if (user.identity === 'student') {
-        window.location.href = '/main';
-      } else if (user.identity === 'instructor') {
-        window.location.href = '/instructor';
+        console.log('Saving user data:', user);
+        
+        // check localStorage
+        console.log('Before storage:', localStorage.getItem('user'));
+        localStorage.setItem('user', JSON.stringify(user));
+        console.log('After storage:', localStorage.getItem('user'));
+        
+        setLoginStatus('Login successful! Redirecting...');
+        
+        // use setTimeout to delay redirection
+        // for better user experience
+        setTimeout(() => {
+          const role = (response.data.role || '').toLowerCase();
+          if (role === 'student') {
+            window.location.href = '/main';
+          } else if (role === 'instructor') {
+            window.location.href = '/instructor';
+          } else {
+            window.location.href = '/';
+          }
+        }, 500);
+      } else {
+        console.log('Login failed:', response.data);
+        setLoginStatus('Login failed: ' + (response.data.message || 'Invalid credentials'));
+        alert('Login failed: ' + (response.data.message || 'Invalid credentials'));
       }
-    } else {
-      alert('Login failed. Please use test accounts.');
+    } catch (error) {
+      console.error('Login error details:', error);
+      
+      
+      if (error.response) {
+        
+        console.error('Server error response:', error.response.data);
+        console.error('Status code:', error.response.status);
+        setLoginStatus(`Server error: ${error.response.status} - ${error.response.data.message || 'Unknown error'}`);
+        alert(`Login failed: ${error.response.data.message || 'Server error (' + error.response.status + ')'}`);
+      } else if (error.request) {
+       
+        console.error('No response received:', error.request);
+        setLoginStatus('Server not responding. Check if the server is running.');
+        alert('Login failed: Server not responding. Please check if the server is running.');
+      } else {
+       
+        console.error('Request error:', error.message);
+        setLoginStatus(`Request error: ${error.message}`);
+        alert(`Login failed: ${error.message}`);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -139,6 +189,16 @@ export default function Login(props) {
           >
             Login
           </Typography>
+          {loginStatus && (
+            <Box sx={{ 
+              padding: 2, 
+              bgcolor: 'info.light', 
+              color: 'info.contrastText',
+              borderRadius: 1
+            }}>
+              {loginStatus}
+            </Box>
+          )}
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -155,6 +215,7 @@ export default function Login(props) {
                 placeholder="your@email.com"
                 error={emailError}
                 helperText={emailErrorMessage}
+                disabled={loading}
               />
             </FormControl>
             <FormControl>
@@ -169,10 +230,16 @@ export default function Login(props) {
                 placeholder="••••••"
                 error={passwordError}
                 helperText={passwordErrorMessage}
+                disabled={loading}
               />
             </FormControl>
-            <Button type="submit" fullWidth variant="contained">
-              Login
+            <Button 
+              type="submit" 
+              fullWidth 
+              variant="contained"
+              disabled={loading}
+            >
+              {loading ? 'Logging in...' : 'Login'}
             </Button>
           </Box>
 
@@ -181,18 +248,42 @@ export default function Login(props) {
           </Divider>
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Button fullWidth variant="outlined" startIcon={<GoogleIcon />}>
+            <Button 
+              fullWidth 
+              variant="outlined" 
+              startIcon={<GoogleIcon />}
+              disabled={loading}
+            >
               Login with Google
             </Button>
-            <Button fullWidth variant="outlined" startIcon={<FacebookIcon />}>
+            <Button 
+              fullWidth 
+              variant="outlined" 
+              startIcon={<FacebookIcon />}
+              disabled={loading}
+            >
               Login with Facebook
             </Button>
             <Typography sx={{ textAlign: 'center' }}>
-              Don’t have an account?{' '}
+              Don't have an account?{' '}
               <Link href="/signup" variant="body2">
                 Sign up
               </Link>
             </Typography>
+          </Box>
+          
+          {/* Debug info - 可以在生产环境中移除 */}
+          <Box sx={{ 
+            marginTop: 2, 
+            padding: 2, 
+            bgcolor: 'grey.100', 
+            borderRadius: 1,
+            fontSize: '0.75rem'
+          }}>
+            <Typography variant="caption">Debug Info:</Typography>
+            <Box component="pre" sx={{ margin: 0, fontSize: 'inherit' }}>
+              {`localStorage status: ${typeof localStorage !== 'undefined' ? 'available' : 'unavailable'}`}
+            </Box>
           </Box>
         </Card>
       </LoginContainer>

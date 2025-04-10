@@ -10,14 +10,17 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "vite"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.5",
     "@mui/material": "^6.4.5",
+    "axios": "^1.8.4",
     "docker": "^1.0.0",
+    "dotenv": "^16.4.7",
     "mui": "^0.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

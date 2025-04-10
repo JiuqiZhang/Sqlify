@@ -1,5 +1,9 @@
 // This file is part of SQLify.
 // The first page of the application, where users can sign up for an account.
+// This file is part of SQLify.
+// The first page of the application, where users can sign up for an account.
+// This file is part of SQLify.
+// The first page of the application, where users can sign up for an account.
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -115,20 +119,21 @@ export default function SignUp(props) {
     const name = data.get("name");
     const email = data.get("email");
     const password = data.get("password");
-    const identity = "student";
+    const role = "Student"; // 默认是学生
 
     try {
-      const res = await axios.post("http://localhost:3000/api/signup", {
-        username: name,
-        password: password,
-        identity: identity,
+      const res = await axios.post("http://localhost:8000/signup", {
+        name,
+        email,
+        password,
+        role,
       });
 
       if (res.data.success) {
         alert("Sign up successful!");
         window.location.href = "/login";
       } else {
-        alert("Signup failed. User may already exist.");
+        alert("Signup failed. " + (res.data.message || "User may already exist."));
       }
     } catch (error) {
       console.error(error);
@@ -250,3 +255,4 @@ export default function SignUp(props) {
     </AppTheme>
   );
 }
+
