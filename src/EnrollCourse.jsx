@@ -21,7 +21,7 @@ export default function EnrollCourse() {
         setError("");
         console.log("Loading course list...");
 
-        const response = await api.get("/student/courses");
+        const response = await axios.get("https://db-group10-451422.wl.r.appspot.com/student/courses");
         console.log("API response:", response.data);
 
         if (response.data.success && response.data.courses) {
@@ -62,7 +62,7 @@ export default function EnrollCourse() {
 
       console.log("Enrollment data:", { studentId, courseId: selectedCourseId });
 
-      const enrollResponse = await api.post("/student/enroll", {
+      const enrollResponse = await axios.post("https://db-group10-451422.wl.r.appspot.com/student/enroll", {
         studentId: studentId,
         courseId: selectedCourseId
       });
@@ -229,25 +229,7 @@ export default function EnrollCourse() {
         </form>
       )}
 
-      <div style={{
-        marginTop: "2rem",
-        padding: "1rem",
-        border: "1px solid #ddd",
-        borderRadius: "4px",
-        backgroundColor: "#f8f9fa"
-      }}>
-        <h5>Debug Info:</h5>
-        <p>API base URL: {api.defaults?.baseURL || "Using configuration from api.js"}</p>
-        <p>Student ID: {studentId || "Not logged in"}</p>
-        <p>Courses loaded: {courses.length}</p>
-        <p>Status: {error ? "Error" : fetchingCourses ? "Loading" : "Connected"}</p>
-        <details>
-          <summary>Course data</summary>
-          <pre style={{ whiteSpace: "pre-wrap" }}>
-            {JSON.stringify(courses, null, 2)}
-          </pre>
-        </details>
-      </div>
+     
     </div>
   );
 }
