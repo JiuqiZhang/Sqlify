@@ -130,7 +130,7 @@ export default function Login({}) {
         // console.log('After storage:', localStorage.getItem('user'));
         
         setLoginStatus('Login successful! Redirecting...');
-        
+        console.log('Login successful! Redirecting...',user);
         // use setTimeout to delay redirection
         // for better user experience
         setTimeout(() => {
@@ -265,7 +265,7 @@ export default function Login({}) {
             </Button>
             <Typography sx={{ textAlign: 'center' }}>
               Don't have an account?{' '}
-              <Link href="/" variant="body2">
+              <Link href="/signup" variant="body2">
                 Sign up
               </Link>
             </Typography>

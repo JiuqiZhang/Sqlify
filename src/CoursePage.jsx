@@ -259,10 +259,10 @@ export default function CoursePage() {
 
         {modules.length === 0 ? (
           <div style={{
-            padding: "20px", backgroundColor: "#e8f4f8",
+            padding: "20px", backgroundColor: "black",
             borderRadius: "8px", textAlign: "center"
           }}>
-            <p>No modules available for this course.</p>
+            <p style={{}}>No modules available for this course.</p>
             {user.role === "instructor" && <p>Click "Create New Module" to add content.</p>}
           </div>
         ) : (

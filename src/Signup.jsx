@@ -73,12 +73,25 @@ export default function SignUp(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [nameError, setNameError] = React.useState(false);
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+  const [roleI, setRoleI] = React.useState(false);
+  const handleRole = event => {
+  
+    // 👇️ this is the checkbox itself
+    if(event.target.id == "student"){
+      setRoleI(false)
+    }else{
+      setRoleI(true)
+    }
+
+   
+  };
+
 
   const validateInputs = () => {
     const email = document.getElementById('email');
     const password = document.getElementById('password');
     const name = document.getElementById('name');
-
+   
     let isValid = true;
 
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
@@ -108,6 +121,7 @@ export default function SignUp(props) {
       setNameErrorMessage('');
     }
 
+
     return isValid;
   };
 
@@ -122,11 +136,11 @@ export default function SignUp(props) {
     const role = "Student"; // 默认是学生
 
     try {
-      const res = await axios.post("https://db-group10-451422.wl.r.appspot.com", {
-        name,
-        email,
-        password,
-        role,
+      const res = await axios.post("https://db-group10-451422.wl.r.appspot.com/signup", {
+        name:name,
+        email:email,
+        password:password,
+        role:roleI?"Instructor":"Student",
       });
 
       if (res.data.success) {
@@ -214,8 +228,13 @@ export default function SignUp(props) {
               />
             </FormControl>
             <FormControlLabel
-              control={<Checkbox value="allowExtraEmails" color="primary" />}
-              label="I want to receive updates via email."
+              control={<input type="checkbox" id="student" checked={!roleI} onChange={handleRole} />}
+              label="Student"
+              
+            />
+             <FormControlLabel
+              control={<input type="checkbox" id="instructor" checked={roleI} onChange={handleRole} />}
+              label="Instructor"
             />
             <Button type="submit" fullWidth variant="contained">
               Sign up
