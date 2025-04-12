@@ -50,7 +50,7 @@ const LoginContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-export default function Login(props) {
+export default function Login({setUser}) {
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
@@ -119,6 +119,8 @@ export default function Login(props) {
           username: response.data.userName,
           identity: response.data.role
         };
+        console.log(user)
+        setUser(user)
 
         // console.log('Saving user data:', user);
         
@@ -174,7 +176,7 @@ export default function Login(props) {
   };
 
   return (
-    <AppTheme {...props}>
+    <AppTheme >
       <CssBaseline enableColorScheme />
       <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
       <LoginContainer direction="row" justifyContent="center">

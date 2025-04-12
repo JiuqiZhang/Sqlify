@@ -5,7 +5,7 @@ import api from "./api";
 
 export default function InstructorPage() {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user")) 
+  const [user, setUser]  = useState(JSON.parse(localStorage.getItem("user")) )
 
   
   const [courses, setCourses] = useState([]);
@@ -146,24 +146,7 @@ export default function InstructorPage() {
       </div>
       
       
-      <div style={{ 
-        marginTop: "2rem", 
-        padding: "1rem", 
-        border: "1px solid #ddd", 
-        borderRadius: "4px",
-        backgroundColor: "#f8f9fa"
-      }}>
-        <h5>Debug Info:</h5>
-        <p>Instructor ID: {user.user_id || "Not available"}</p>
-        <p>User Role: {user.identity || "Unknown"}</p>
-        <p>Courses Count: {courses.length}</p>
-        <details>
-          <summary>Courses Data</summary>
-          <pre style={{ whiteSpace: "pre-wrap" }}>
-            {JSON.stringify(courses, null, 2)}
-          </pre>
-        </details>
-      </div>
+
     </div>
   );
 }
