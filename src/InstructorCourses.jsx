@@ -28,7 +28,7 @@ export default function InstructorCourses() {
 
   // API instance
   const api = axios.create({
-    baseURL: "http://localhost:8000",
+    baseURL: "http://db-group10-451422.wl.r.appspot.com",
   });
 
   

@@ -112,7 +112,7 @@ export default function CoursePage() {
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const api = axios.create({ baseURL: "http://localhost:8000" });
+  const api = axios.create({ baseURL: "https://db-group10-451422.wl.r.appspot.com" });
 
   const fetchCourseData = async () => {
     if (!courseId) {

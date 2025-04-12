@@ -106,11 +106,7 @@ export default function Login(props) {
       
       setLoginStatus('Connecting to server...');
       
-      const response = await axios.post('http://localhost:8000/login', {
-        name: email,
-        email,
-        password
-      });
+      const response = await axios.get('https://db-group10-451422.wl.r.appspot.com/login/'+email+"/"+ password);
 
       console.log('Login API response received:', response);
       console.log('Response data:', response.data);
@@ -124,12 +120,12 @@ export default function Login(props) {
           identity: response.data.role
         };
 
-        console.log('Saving user data:', user);
+        // console.log('Saving user data:', user);
         
-        // check localStorage
-        console.log('Before storage:', localStorage.getItem('user'));
+        // // check localStorage
+        // console.log('Before storage:', localStorage.getItem('user'));
         localStorage.setItem('user', JSON.stringify(user));
-        console.log('After storage:', localStorage.getItem('user'));
+        // console.log('After storage:', localStorage.getItem('user'));
         
         setLoginStatus('Login successful! Redirecting...');
         
@@ -137,6 +133,7 @@ export default function Login(props) {
         // for better user experience
         setTimeout(() => {
           const role = (response.data.role || '').toLowerCase();
+          // console.log(response.data)
           if (role === 'student') {
             window.location.href = '/main';
           } else if (role === 'instructor') {

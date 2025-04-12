@@ -12,7 +12,7 @@ const TakeQuizForm = ({ quiz, onSubmit, loading }) => {
 
   // API实例
   const api = axios.create({
-    baseURL: "http://localhost:8000",
+    baseURL: "https://db-group10-451422.wl.r.appspot.com",
   });
 
   // 获取当前测验的问题
@@ -310,7 +310,7 @@ export default function QuizPage() {
 
   // APIinstance
   const api = axios.create({
-    baseURL: "http://localhost:8000",
+    baseURL: "https://db-group10-451422.wl.r.appspot.com",
   });
 
   
