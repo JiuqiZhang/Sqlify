@@ -27,6 +27,7 @@ export default function App() {
         <Route path="/course/:courseId" element={<CoursePage />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/main" element={<MainPage />} /> {/* 添加主界面 */}
         <Route path="/create-course" element={<CreateCourse />} />
         <Route path="/enroll" element={<EnrollCourse />} />

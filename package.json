@@ -4,7 +4,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "proxy":"https://db-group10-451422.wl.r.appspot.com/",
+  "proxy": "https://db-group10-451422.wl.r.appspot.com/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -18,10 +18,12 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.5",
     "@mui/material": "^6.4.5",
+    "axios": "^1.8.4",
     "docker": "^1.0.0",
     "mui": "^0.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-router-dom": "^7.5.0",
     "yaml": "^2.7.0"
   },
   "devDependencies": {
