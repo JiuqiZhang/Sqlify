@@ -50,7 +50,7 @@ const LoginContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-export default function Login({setUser}) {
+export default function Login({}) {
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
@@ -120,7 +120,7 @@ export default function Login({setUser}) {
           identity: response.data.role
         };
         console.log(user)
-        setUser(user)
+  
 
         // console.log('Saving user data:', user);
         

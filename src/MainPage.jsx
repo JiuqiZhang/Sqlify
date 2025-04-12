@@ -2,10 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "./api";
 
-export default function MainPage({user}) {
+export default function MainPage() {
   const navigate = useNavigate();
 
- 
+  const storedUser = JSON.parse(localStorage.getItem("user")) || {};
+  const user = {
+    userId: storedUser.userId || storedUser.user_id,
+    username: storedUser.username || storedUser.userName || storedUser.name || "Guest",
+    role: (storedUser.identity || storedUser.role || "guest").toLowerCase(),
+  };
 
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [availableCourses, setAvailableCourses] = useState([]);
@@ -15,7 +20,6 @@ export default function MainPage({user}) {
   const [rawApiResponses, setRawApiResponses] = useState({});
 
   useEffect(() => {
-    console.log('et')
     const fetchCourses = async () => {
       if (!user.userId) {
         console.warn("No user ID found, cannot fetch courses");
@@ -114,7 +118,7 @@ export default function MainPage({user}) {
     };
 
     fetchCourses();
-  }, [user]);
+  }, [user.userId]);
 
   return (
     <div style={{ padding: "2rem" }}>
