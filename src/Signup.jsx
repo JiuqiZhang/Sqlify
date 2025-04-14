@@ -1,5 +1,9 @@
 // This file is part of SQLify.
 // The first page of the application, where users can sign up for an account.
+// This file is part of SQLify.
+// The first page of the application, where users can sign up for an account.
+// This file is part of SQLify.
+// The first page of the application, where users can sign up for an account.
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -69,12 +73,25 @@ export default function SignUp(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [nameError, setNameError] = React.useState(false);
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+  const [roleI, setRoleI] = React.useState(false);
+  const handleRole = event => {
+  
+    // 👇️ this is the checkbox itself
+    if(event.target.id == "student"){
+      setRoleI(false)
+    }else{
+      setRoleI(true)
+    }
+
+   
+  };
+
 
   const validateInputs = () => {
     const email = document.getElementById('email');
     const password = document.getElementById('password');
     const name = document.getElementById('name');
-
+   
     let isValid = true;
 
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
@@ -104,6 +121,7 @@ export default function SignUp(props) {
       setNameErrorMessage('');
     }
 
+
     return isValid;
   };
 
@@ -115,20 +133,21 @@ export default function SignUp(props) {
     const name = data.get("name");
     const email = data.get("email");
     const password = data.get("password");
-    const identity = "student";
+    const role = "Student"; // 默认是学生
 
     try {
-      const res = await axios.post("http://localhost:3000/api/signup", {
-        username: name,
-        password: password,
-        identity: identity,
+      const res = await axios.post("https://db-group10-451422.wl.r.appspot.com/signup", {
+        name:name,
+        email:email,
+        password:password,
+        role:roleI?"Instructor":"Student",
       });
 
       if (res.data.success) {
         alert("Sign up successful!");
         window.location.href = "/login";
       } else {
-        alert("Signup failed. User may already exist.");
+        alert("Signup failed. " + (res.data.message || "User may already exist."));
       }
     } catch (error) {
       console.error(error);
@@ -209,8 +228,13 @@ export default function SignUp(props) {
               />
             </FormControl>
             <FormControlLabel
-              control={<Checkbox value="allowExtraEmails" color="primary" />}
-              label="I want to receive updates via email."
+              control={<input type="checkbox" id="student" checked={!roleI} onChange={handleRole} />}
+              label="Student"
+              
+            />
+             <FormControlLabel
+              control={<input type="checkbox" id="instructor" checked={roleI} onChange={handleRole} />}
+              label="Instructor"
             />
             <Button type="submit" fullWidth variant="contained">
               Sign up
@@ -250,3 +274,4 @@ export default function SignUp(props) {
     </AppTheme>
   );
 }
+
