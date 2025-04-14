@@ -117,11 +117,11 @@ export default function ChatPage() {
               border: msg.isResult ? "1px solid #a5d6a7" : "1px solid #e0e0e0"
             }}
           >
-            <strong>{msg.sender === "user" ? "You" : "AI"}:</strong> 
+            <strong style={{ color:"black"}}>{msg.sender === "user" ? "You" : "AI"}:</strong> 
             {msg.isResult ? (
-              <pre style={{ whiteSpace: "pre-wrap", margin: 0 }}>{msg.text}</pre>
+              <pre style={{ whiteSpace: "pre-wrap", margin: 0 , color:"black"}}>{msg.text}</pre>
             ) : (
-              <div style={{ whiteSpace: "pre-wrap" }}>{msg.text}</div>
+              <div style={{ whiteSpace: "pre-wrap" , color:"black"}}>{msg.text}</div>
             )}
           </div>
         ))}
@@ -142,6 +142,7 @@ export default function ChatPage() {
             padding: "10px", 
             borderRadius: "4px",
             border: "1px solid #ccc"
+            
           }}
           placeholder="Ask me to convert your question into SQL..."
         />
